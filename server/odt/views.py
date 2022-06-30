@@ -13,7 +13,6 @@ def getFile(request):
 
 def getODT(request):
     file = request.FILES['file']
-    file.name = request.POST.get("name")+".pdf"
     file_name = default_storage.save(file.name, file)
 
     os.system(
