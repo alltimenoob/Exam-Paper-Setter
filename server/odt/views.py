@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.context_processors import csrf
 import os
-from .models import FilesUpload
+from django.core.files.storage import default_storage
 
 
 def getFile(request):
@@ -14,9 +14,9 @@ def getFile(request):
 def getODT(request):
     file = request.FILES['file']
     file.name = request.POST.get("name")+".pdf"
-    document = FilesUpload.objects.create(file=file)
-    document.save()
+    file_name = default_storage.save(file.name, file)
+
     os.system(
-        "soffice --infilter=\"writer_pdf_import\" --convert-to odf:\"writer8\" "+file.name)
+        "soffice --infilter=\"writer_pdf_import\" --convert-to odf:\"writer8\" "+file_name)
     response = HttpResponse("Done")
     return response
